@@ -91,6 +91,13 @@ class bomber:
     def size(x, y):
         bomber.window.geometry(f"{x}x{y}")
 
+    # Перезапуск игры
+    def restart_game(self):
+        [child.destroy() for child in self.window.winfo_children()]
+        self.__init__()
+        self.create_widgets()
+        bomber.first_try = True
+        bomber.game_status = False
 
     # Настройки
     def settings(self):
