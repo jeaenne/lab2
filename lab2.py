@@ -199,7 +199,16 @@ class bomber:
         shuffle(Seryozha)
         return Seryozha[:bomber.bombs]
 
-    
+    # Неправильный сапер
+    def wrong(self, number: int):
+        were = self.were_is_bombs(number)
+        print(were)
+        for i in range(1, bomber.row + 1):
+            for j in range(1, bomber.columns + 1):
+                btn = self.buttons[i][j]
+                if btn.number in were:
+                    btn.is_bomd = True
+
     # Обработаем нажатие
     def click(self, clicked_button: MyButton):
 
