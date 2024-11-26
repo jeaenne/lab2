@@ -45,7 +45,7 @@ class bomber:
     def __init__(self):
         self.buttons = []
         for i in range(bomber.row + 2):
-            # Список столбцов\вложенный типо
+            # Список столбцов/строк
             temp = []
             for j in range(bomber.columns + 2):
                 # Вызываем класс с измененной настройкой кнопочек для создания кнопочек
@@ -76,7 +76,7 @@ class bomber:
                 bomber.not_flag -= 1
 
         if bomber.key == bomber.bombs and bomber.not_flag == 0 and bomber.all_open == bomber.end:
-            showinfo("Игра окончена", "К сожалению вы смогли")
+            showinfo("Игра окончена", "Поздравляю с победой! :D")
             self.win_open()
 
     # Зовем всех друзей чтобы игра заработала
@@ -140,7 +140,8 @@ class bomber:
             return
 
         try:
-            if 5 < int(row.get()) < 33 and 5 < int(column.get()) < 33 and 0 < int(bomb.get()):
+            if 5 < int(row.get()) < 33 and 5 < int(column.get()) < 33 and \
+                0 < int(bomb.get()) < int(column.get()) * int(row.get()):
                 bomber.row = int(row.get())
                 bomber.columns = int(column.get())
                 bomber.bombs = int(bomb.get())
@@ -149,6 +150,10 @@ class bomber:
         except ValueError:
             showerror('Ошибка', 'Не верно введены строки или столбцы')
             return
+        if 5 < int(row.get()) < 33 or 5 < int(column.get()) < 33 or \
+            0 < int(bomb.get()) < int(column.get()) * int(row.get()):
+            showerror('Ошибка', 'Не верно введены строки или столбцы')
+
 
     # Делаем кнопочки видимыми
     def create_widgets(self):
@@ -207,14 +212,14 @@ class bomber:
             for j in range(1, bomber.columns + 1):
                 btn = self.buttons[i][j]
                 if btn.number in were:
-                    btn.is_bomd = True
+                    btn.is_bomb = True
 
     # Обработаем нажатие
     def click(self, clicked_button: MyButton):
 
         if bomber.first_try:
             bomber.first_try = False
-            self.Artem(clicked_button.number)
+            self.wrong(clicked_button.number)
             self.how_many_bombs()
             self.console_print()
 
@@ -236,7 +241,7 @@ class bomber:
         clicked_button.config(state='disabled')
         clicked_button.config(relief=tk.SUNKEN)
         if bomber.key == bomber.bombs and bomber.not_flag == 0 and bomber.all_open == bomber.end:
-            showinfo("Игра окончена", "К сожалению вы смогли")
+            showinfo("Игра окончена", "Поздравляю с победой! :D")
             self.win_open()
 
     # Найдем бомбы
@@ -255,11 +260,11 @@ class bomber:
 
     # Супер-пупер-мега-сложное-многоходовочное открытие зон без кнопок
     def open_buttons(self, clicked_button: MyButton):
-        # Гига-мага список для кнопок
+        # Список для кнопок
         spisok = [clicked_button]
         while spisok:
 
-            # Убераем текущую кнопку из списка и записываем ее в переменную
+            # Убираем текущую кнопку из списка и записываем ее в переменную
             it_button = spisok.pop()
             # задаем цвет
             color = colors.get(it_button.count_bombs, 'black')
@@ -270,13 +275,13 @@ class bomber:
             else:
                 it_button.config(text='', disabledforeground=color)
 
-            # Ставик в кнопке пометку об открытии
+            # Ставим в кнопке пометку об открытии
             it_button.is_open = True
             it_button.config(state='disabled')
             it_button.config(relief=tk.SUNKEN)
             bomber.all_open += 1
 
-            # Гига-мага и дт
+            # Список и дт
             if it_button.count_bombs == 0:
                 # Задаем координаты
                 x, y = it_button.x, it_button.y
@@ -286,10 +291,10 @@ class bomber:
                         # Ниже идет проверка координат: нам нужны только соседи сверху\снизу\слыва\справа без диагоналей
 
                         # Вычисляем следующую кнопку:
-                        # координата х + координата-сдивг по х для вычисления соседа
-                        # координата у + координата-сдивг по у для вычисления соседа
+                        # координата х + координата-сдвиг по х для вычисления соседа
+                        # координата у + координата-сдвиг по у для вычисления соседа
                         next_button = self.buttons[x + neighbour_x][y + neighbour_y]
-                        # Гига проверка
+                        # Проверка
                         # Открыта ли кнопка
                         # убераем невидимые столбики и строчки (обводку)
                         # Проверяем была ли уже эта кнопка
